@@ -20,6 +20,9 @@ Route::post('register/student', [AuthController::class, 'studentRegister']);
 Route::post('register/teacher', [AuthController::class, 'teacherRegister']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    // Auth
+    Route::post('logout', [AuthController::class, 'logout']);
+
     Route::middleware('role:admin')->group(function () {
         // Master Data
         Route::apiResource('data-users', UserController::class)->parameters([
