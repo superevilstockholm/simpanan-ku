@@ -23,6 +23,15 @@ Route::middleware('auth:sanctum')->group(function () {
     // Auth
     Route::post('logout', [AuthController::class, 'logout']);
 
+    // Teacher
+    Route::middleware('role:teacher')->group(function () {
+        // Tabungan
+        Route::apiResource('data-tabungan', DataTabunganController::class)->parameters([
+            'data-tabungan' => 'dataTabungan'
+        ]);
+    });
+
+    // Admin
     Route::middleware('role:admin')->group(function () {
         // Master Data
         Route::apiResource('data-users', UserController::class)->parameters([
