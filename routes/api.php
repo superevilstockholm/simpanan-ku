@@ -13,6 +13,8 @@ use App\Http\Controllers\MasterData\DataTeacherController;
 
 // Auth
 Route::post('login', [AuthController::class, 'login']);
+Route::post('register/student', [AuthController::class, 'studentRegister']);
+Route::post('register/teacher', [AuthController::class, 'teacherRegister']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('role:admin')->group(function () {

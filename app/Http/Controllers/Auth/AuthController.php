@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 
 use App\Models\User;
 use App\Models\MasterData\DataStudent;
+use App\Models\MasterData\DataTeacher;
 use Exception;
 
 class AuthController extends Controller
@@ -79,6 +80,10 @@ class AuthController extends Controller
                     'role' => 'student'
                 ]);
 
+                $student->update([
+                    'user_id' => $user->id
+                ]);
+
                 return response()->json(
                     [
                         "status" => true,
@@ -111,6 +116,57 @@ class AuthController extends Controller
     }
 
     public function teacherRegister(Request $request) {
-        //
+        try {
+            $validated = $request->validate([
+                'nik' => 'required|min:16|max:16|unique:data_teacher,nik',
+                'dob' => 'required|date',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|min:8|max:128'
+            ]);
+
+            $teacher = DataTeacher::where('nik', $validated['nik'])->first();
+
+            if ($teacher && $teacher->dob == $validated['dob']) {
+                $validated['password'] = Hash::make($validated['password']);
+                $user = User::create([
+                    'name' => $teacher->fullname,
+                    'email' => $validated['email'],
+                    'password' => $validated['password'],
+                    'role' => 'teacher'
+                ]);
+
+                $teacher->update([
+                    'user_id' => $user->id
+                ]);
+
+                return response()->json(
+                    [
+                        "status" => true,
+                        "message" => "Successfully registered",
+                        "data" => [
+                            "name" => $user->name,
+                            "email" => $user->email,
+                            "role" => $user->role
+                        ]
+                    ], 200
+                );
+            } else {
+                return response()->json(
+                    [
+                        "status" => false,
+                        "message" => "Failed to register, invalid credentials",
+                        "data" => null
+                    ], 400
+                );
+            }
+        } catch (Exception $e) {
+            return response()->json(
+                [
+                    "status" => false,
+                    "message" => "An error occurred while registering",
+                    "error" => $e->getMessage(),
+                ], 500
+            );
+        }
     }
 }
