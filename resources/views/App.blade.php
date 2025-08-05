@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-bs-theme="dark">
 <head>
     {{-- SEO --}}
     <meta name="description" content="@yield('description', 'SimpananKu - Aplikasi Tabungan Digital Sekolah')">
@@ -15,18 +15,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     {{-- Bootstrap --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css">
+    {{-- Bootstrap Icons --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     {{-- Styles --}}
     <style>
         /* Default font is inter */
         * { font-family: 'Inter', Helvetica, sans-serif; }
+        /* Theme */
+        html[data-bs-theme="dark"] {
+            background-color: rgba(0, 0, 0, 1);
+        }
     </style>
 </head>
-<body data-bs-theme="dark">
-    @include('components.navbar_component')
+<body class="bg-transparent">
+    @if ($meta['showNavBar'] ?? true)
+        @include('components.navbar_component')
+    @endif
     <main>
         @yield('content')
     </main>
-    @include('components.footer_component')
+    @if ($meta['showFooter'] ?? true)
+        @include('components.footer_component')
+    @endif
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </body>
