@@ -11,6 +11,9 @@ use App\Http\Controllers\MasterData\DataClassesController;
 use App\Http\Controllers\MasterData\DataStudentController;
 use App\Http\Controllers\MasterData\DataTeacherController;
 
+// Tabungan
+use App\Http\Controllers\Tabungan\DataTabunganController;
+
 // Auth
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register/student', [AuthController::class, 'studentRegister']);
@@ -30,6 +33,11 @@ Route::middleware('auth:sanctum')->group(function () {
         ]);
         Route::apiResource('data-teachers', DataTeacherController::class)->parameters([
             'data-teachers' => 'dataTeacher'
+        ]);
+
+        // Tabungan
+        Route::apiResource('data-tabungan', DataTabunganController::class)->parameters([
+            'data-tabungan' => 'dataTabungan'
         ]);
     });
 });

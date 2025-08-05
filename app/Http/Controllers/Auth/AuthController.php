@@ -6,11 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
+use Exception;
 
 use App\Models\User;
 use App\Models\MasterData\DataStudent;
 use App\Models\MasterData\DataTeacher;
-use Exception;
+use App\Models\Tabungan\DataTabungan;
 
 class AuthController extends Controller
 {
@@ -81,6 +82,10 @@ class AuthController extends Controller
                 ]);
 
                 $student->update([
+                    'user_id' => $user->id
+                ]);
+
+                DataTabungan::create([
                     'user_id' => $user->id
                 ]);
 

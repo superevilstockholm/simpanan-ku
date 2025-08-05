@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\MasterData;
+namespace App\Http\Controllers\Tabungan;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Exception;
 
-use App\Models\MasterData\DataClasses;
+use App\Models\Tabungan\DataTabungan;
 
-class DataClassesController extends Controller
+class DataTabunganController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,17 +18,18 @@ class DataClassesController extends Controller
     {
         try {
             if ($request->boolean('all')) {
-                $data_classes = DataClasses::all();
+                $data_tabungan = DataTabungan::with('user')->get();
                 $message = "Successfully retrieved all data.";
             } else {
-                $data_classes = DataClasses::paginate(10);
+                $data_tabungan = DataTabungan::with('user')->paginate(10);
                 $message = "Successfully retrieved 10 data.";
             }
+
             return response()->json(
                 [
                     "status" => true,
                     "message" => $message,
-                    "data" => $data_classes
+                    "data" => $data_tabungan
                 ], 200
             );
         } catch (Exception $e) {
@@ -49,20 +50,18 @@ class DataClassesController extends Controller
     {
         try {
             $validated = $request->validate([
-                'name' => 'required|string|max:255|unique:data_classes,name',
-                'description' => 'nullable|string|max:255'
+                'user_id' => 'required|int|exists:users,id',
+                'nominal' => 'nullable|numeric|min:0'
             ]);
 
-            $class = DataClasses::create($validated);
+            $data_tabungan = DataTabungan::create($validated);
+            $data_tabungan->load('user');
 
             return response()->json(
                 [
                     "status" => true,
                     "message" => "Successfully created data.",
-                    "data" => [
-                        "name" => $class->name,
-                        "description" => $class->description
-                    ]
+                    "data" => $data_tabungan
                 ], 200
             );
         } catch (Exception $e) {
@@ -79,15 +78,15 @@ class DataClassesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(DataClasses $dataClasses): JsonResponse
+    public function show(DataTabungan $dataTabungan): JsonResponse
     {
         try {
             return response()->json(
                 [
                     "status" => true,
                     "message" => "Successfully retrieved data.",
-                    "data" => $dataClasses
-                ], 200
+                    "data" => $dataTabungan->load('user')
+                ]
             );
         } catch (Exception $e) {
             return response()->json(
@@ -103,24 +102,21 @@ class DataClassesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, DataClasses $dataClasses)
+    public function update(Request $request, DataTabungan $dataTabungan): JsonResponse
     {
         try {
             $validated = $request->validate([
-                'name' => 'required|string|max:255|unique:data_classes,name,' . $dataClasses->id,
-                'description' => 'nullable|string|max:255'
+                'user_id' => 'required|int|exists:users,id',
+                'nominal' => 'nullable|numeric|min:0'
             ]);
 
-            $dataClasses->update($validated);
+            $dataTabungan->update($validated);
 
             return response()->json(
                 [
                     "status" => true,
                     "message" => "Successfully updated data.",
-                    "data" => [
-                        "name" => $dataClasses->name,
-                        "description" => $dataClasses->description
-                    ]
+                    "data" => $dataTabungan->load('user')
                 ], 200
             );
         } catch (Exception $e) {
@@ -137,10 +133,10 @@ class DataClassesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(DataClasses $dataClasses): JsonResponse
+    public function destroy(DataTabungan $dataTabungan): JsonResponse
     {
         try {
-            $dataClasses->delete();
+            $dataTabungan->delete();
 
             return response()->json(
                 [

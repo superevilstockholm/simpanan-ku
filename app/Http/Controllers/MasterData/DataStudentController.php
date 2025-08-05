@@ -17,7 +17,7 @@ class DataStudentController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            if ($request->query('all') == true) {
+            if ($request->boolean('all')) {
                 $data_students = DataStudent::all();
                 $message = "Successfully retrieved all data.";
             } else {
@@ -154,7 +154,7 @@ class DataStudentController extends Controller
                     "status" => false,
                     "message" => "An error occurred",
                     "error" => $e->getMessage(),
-                ], 200
+                ], 500
             );
         }
     }

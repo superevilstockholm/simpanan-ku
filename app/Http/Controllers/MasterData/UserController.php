@@ -17,7 +17,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->query('all') == true) {
+            if ($request->boolean('all')) {
                 $data_users = User::all();
                 $message = "Successfully retrieved all data.";
             } else {
