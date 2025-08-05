@@ -184,6 +184,15 @@ class AuthController extends Controller
                     "status" => true,
                     "message" => "Successfully logged out"
                 ], 200
+            )->cookie(
+                'auth_token',
+                '',
+                -1,
+                '/', // path
+                null, // domain
+                false, // secure
+                false, // httponly
+                'Lax' // samesite
             );
         } catch (Exception $e) {
             return response()->json(
@@ -192,6 +201,15 @@ class AuthController extends Controller
                     "message" => "An error occurred while logging out",
                     "error" => $e->getMessage(),
                 ], 500
+            )->cookie(
+                'auth_token',
+                '',
+                -1,
+                '/', // path
+                null, // domain
+                false, // secure
+                false, // httponly
+                'Lax' // samesite
             );
         }
     }
