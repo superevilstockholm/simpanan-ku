@@ -48,7 +48,7 @@ class AuthController extends Controller
             } else {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Login failed, invalid credentials',
+                    'message' => 'Login failed, invalid password',
                     'data' => null
                 ], 400);
             }
