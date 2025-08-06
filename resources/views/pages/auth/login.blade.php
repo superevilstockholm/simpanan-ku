@@ -48,7 +48,8 @@
                         showConfirmButton: false,
                         timer: 1500
                     });
-                    window.location.href = '/dashboard';
+
+                    window.location.href = `/${response.data.data.role}-dashboard`;
                 } else {
                     Swal.fire({
                         icon: 'error',

@@ -3,12 +3,15 @@
 namespace App\Models\MasterData;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use App\Models\User;
 use App\Models\MasterData\DataClasses;
 
 class DataStudent extends Model
 {
+    use HasFactory;
+
     protected $table = 'data_student';
 
     protected $fillable = [
