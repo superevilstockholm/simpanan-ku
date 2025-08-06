@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 use Exception;
 
 use App\Models\User;
@@ -25,6 +26,8 @@ class AuthController extends Controller
             $user = User::where('email', $request->email)->first();
 
             if (Hash::check($validated['password'], $user->password)) {
+                // delete all old token
+                $user->tokens()->delete();
                 $token = $user->createToken('auth_token')->plainTextToken;
 
                 return response()->json([
@@ -64,7 +67,7 @@ class AuthController extends Controller
     public function studentRegister(Request $request): JsonResponse {
         try {
             $validated = $request->validate([
-                'nisn' => 'required|min:10|max:10|unique:data_student,nisn',
+                'nisn' => 'required|min:10|max:10|exists:data_student,nisn',
                 'dob' => 'required|date',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|min:8|max:128'
@@ -72,7 +75,18 @@ class AuthController extends Controller
 
             $student = DataStudent::where('nisn', $request->nisn)->first();
 
-            if ($student && $student->dob == $validated['dob']) {
+            // Check if user already exists
+            if (User::where('id', $student->user_id)->exists()) {
+                return response()->json(
+                    [
+                        "status" => false,
+                        "message" => "Failed to register, user already exists",
+                        "data" => null
+                    ], 400
+                );
+            }
+
+            if (Carbon::parse($student->dob)->isSameDay(Carbon::parse($validated['dob']))) {
                 $validated['password'] = Hash::make($validated['password']);
                 $user = User::create([
                     'name' => $student->fullname,
@@ -104,7 +118,7 @@ class AuthController extends Controller
                 return response()->json(
                     [
                         "status" => false,
-                        "message" => "Failed to register, invalid credentials",
+                        "message" => "Failed to register, invalid date of birth",
                         "data" => null
                     ], 400
                 );
@@ -123,7 +137,7 @@ class AuthController extends Controller
     public function teacherRegister(Request $request) {
         try {
             $validated = $request->validate([
-                'nik' => 'required|min:16|max:16|unique:data_teacher,nik',
+                'nik' => 'required|min:16|max:16|exists:data_teacher,nik',
                 'dob' => 'required|date',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|min:8|max:128'
@@ -131,7 +145,18 @@ class AuthController extends Controller
 
             $teacher = DataTeacher::where('nik', $validated['nik'])->first();
 
-            if ($teacher && $teacher->dob == $validated['dob']) {
+            // Check if user already exists
+            if (User::where('id', $teacher->user_id)->exists()) {
+                return response()->json(
+                    [
+                        "status" => false,
+                        "message" => "Failed to register, user already exists",
+                        "data" => null
+                    ], 400
+                );
+            }
+
+            if (Carbon::parse($teacher->dob)->isSameDay(Carbon::parse($validated['dob']))) {
                 $validated['password'] = Hash::make($validated['password']);
                 $user = User::create([
                     'name' => $teacher->fullname,
@@ -159,7 +184,7 @@ class AuthController extends Controller
                 return response()->json(
                     [
                         "status" => false,
-                        "message" => "Failed to register, invalid credentials",
+                        "message" => "Failed to register, invalid date of birth",
                         "data" => null
                     ], 400
                 );
