@@ -26,7 +26,6 @@ class AuthController extends Controller
             $user = User::where('email', $request->email)->first();
 
             if (Hash::check($validated['password'], $user->password)) {
-                // delete all old token
                 $user->tokens()->delete();
                 $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -75,7 +74,6 @@ class AuthController extends Controller
 
             $student = DataStudent::where('nisn', $request->nisn)->first();
 
-            // Check if user already exists
             if (User::where('id', $student->user_id)->exists()) {
                 return response()->json(
                     [
@@ -145,7 +143,6 @@ class AuthController extends Controller
 
             $teacher = DataTeacher::where('nik', $validated['nik'])->first();
 
-            // Check if user already exists
             if (User::where('id', $teacher->user_id)->exists()) {
                 return response()->json(
                     [

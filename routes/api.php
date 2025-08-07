@@ -16,8 +16,8 @@ use App\Http\Controllers\Tabungan\DataTabunganController;
 
 // Auth
 Route::post('login', [AuthController::class, 'login']);
-Route::post('register/student', [AuthController::class, 'studentRegister']);
-Route::post('register/teacher', [AuthController::class, 'teacherRegister']);
+Route::post('student-register', [AuthController::class, 'studentRegister']);
+Route::post('teacher-register', [AuthController::class, 'teacherRegister']);
 
 Route::middleware('auth:sanctum')->group(function () {
     // Auth
