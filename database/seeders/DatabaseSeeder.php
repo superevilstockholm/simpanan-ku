@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 
 use App\Models\User;
 use App\Models\MasterData\DataStudent;
+use App\Models\MasterData\DataTeacher;
 
 class DatabaseSeeder extends Seeder
 {
@@ -28,5 +29,8 @@ class DatabaseSeeder extends Seeder
 
         // Data Student
         DataStudent::factory(10)->create();
+
+        // Data Teacher
+        DataTeacher::factory(5)->create();
     }
 }
