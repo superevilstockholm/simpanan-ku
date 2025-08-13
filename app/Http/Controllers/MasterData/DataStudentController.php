@@ -17,12 +17,18 @@ class DataStudentController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            if ($request->boolean('all')) {
+            $limit = $request->query('limit') ?? 10;
+            if ($limit === 'all') {
                 $data_students = DataStudent::all();
                 $message = "Successfully retrieved all data.";
+            } elseif (!ctype_digit($limit) || intval($limit) <= 0) {
+                return response()->json([
+                    "status" => false,
+                    "message" => "Invalid 'limit' parameter. Must be a positive integer or 'all'."
+                ], 422);
             } else {
-                $data_students = DataStudent::paginate(10);
-                $message = "Successfully retrieved 10 data.";
+                $data_students = DataStudent::paginate($limit);
+                $message = "Successfully retrieved $limit data.";
             }
             return response()->json(
                 [
@@ -115,12 +121,13 @@ class DataStudentController extends Controller
             ]);
 
             $dataStudent->update($validated);
+            $dataStudent->refresh();
 
             return response()->json(
                 [
                     "status" => true,
                     "message" => "Successfully updated data.",
-                    "data" => $dataStudent
+                    "data" => collect($dataStudent)->only(['id', 'nisn', 'fullname', 'gender', 'dob', 'class_id'])
                 ], 200
             );
         } catch (Exception $e) {
