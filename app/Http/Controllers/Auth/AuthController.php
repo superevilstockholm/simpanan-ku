@@ -16,7 +16,8 @@ use App\Models\Tabungan\DataTabungan;
 
 class AuthController extends Controller
 {
-    public function login(Request $request): JsonResponse {
+    public function login(Request $request): JsonResponse
+    {
         try {
             $validated = $request->validate([
                 'email' => 'required|email|exists:users,email',
@@ -63,7 +64,8 @@ class AuthController extends Controller
         }
     }
 
-    public function studentRegister(Request $request): JsonResponse {
+    public function studentRegister(Request $request): JsonResponse
+    {
         try {
             $validated = $request->validate([
                 'nisn' => 'required|min:10|max:10|exists:data_student,nisn',
@@ -97,8 +99,8 @@ class AuthController extends Controller
                     'user_id' => $user->id
                 ]);
 
-                DataTabungan::create([
-                    'user_id' => $user->id
+                $user->tabungan()->create([
+                    'nominal' => 0
                 ]);
 
                 return response()->json(
@@ -128,7 +130,8 @@ class AuthController extends Controller
         }
     }
 
-    public function teacherRegister(Request $request) {
+    public function teacherRegister(Request $request)
+    {
         try {
             $validated = $request->validate([
                 'nik' => 'required|min:16|max:16|exists:data_teacher,nik',
@@ -189,7 +192,8 @@ class AuthController extends Controller
         }
     }
 
-    public function logout(Request $request): JsonResponse {
+    public function logout(Request $request): JsonResponse
+    {
         try {
             $request->user()->currentAccessToken()->delete();
 

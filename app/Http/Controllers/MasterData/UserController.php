@@ -79,6 +79,10 @@ class UserController extends Controller
                 }
                 $user = User::create($validated);
                 $student->update(['user_id' => $user->id]);
+
+                $user->tabungan()->create([
+                    'nominal' => 0
+                ]);
             } elseif ($validated['role'] === 'teacher') {
                 $req = $request->validate([
                     'teacher_id' => 'required|exists:data_teacher,id'
