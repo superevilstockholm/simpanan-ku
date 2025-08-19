@@ -105,11 +105,7 @@ class AuthController extends Controller
                     [
                         "status" => true,
                         "message" => "Successfully registered",
-                        "data" => [
-                            "name" => $user->name,
-                            "email" => $user->email,
-                            "role" => $user->role
-                        ]
+                        "data" => collect($user)->only(['id', 'name', 'email', 'role'])
                     ], 200
                 );
             } else {
@@ -170,11 +166,7 @@ class AuthController extends Controller
                     [
                         "status" => true,
                         "message" => "Successfully registered",
-                        "data" => [
-                            "name" => $user->name,
-                            "email" => $user->email,
-                            "role" => $user->role
-                        ]
+                        "data" => collect($user)->only(['id', 'name', 'email', 'role'])
                     ], 200
                 );
             } else {

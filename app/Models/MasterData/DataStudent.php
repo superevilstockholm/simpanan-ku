@@ -29,6 +29,7 @@ class DataStudent extends Model
 
     public $timestamps = true;
 
+    protected $hidden = ['created_at', 'updated_at'];
     public function class()
     {
         return $this->belongsTo(DataClasses::class, 'class_id');

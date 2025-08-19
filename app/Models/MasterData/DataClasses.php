@@ -18,4 +18,6 @@ class DataClasses extends Model
     public $incrementing = true;
 
     public $timestamps = true;
+
+    protected $hidden = ['created_at', 'updated_at'];
 }
